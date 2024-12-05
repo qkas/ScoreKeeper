@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 
 const NewScoreScreen = ({ navigation }) => {
-  const [playerData, setPlayerData] = useState([{ name: '', totalScore: 0, scoreToAdd: '' }]);
+  const [playerData, setPlayerData] = useState([{ name: '', totalScore: 0, scoreToAdd: 0 }]);
 
   const handleInputChange = (index, field, value) => {
     const updatedPlayerData = [...playerData];
@@ -11,7 +11,7 @@ const NewScoreScreen = ({ navigation }) => {
   };
 
   const addPlayer = () => {
-    setPlayerData((prev) => [...prev, { name: '', totalScore: 0, scoreToAdd: '' }]);
+    setPlayerData((prev) => [...prev, { name: '', totalScore: 0, scoreToAdd: 0 }]);
   };
 
   const removePlayer = () => {
@@ -32,7 +32,7 @@ const NewScoreScreen = ({ navigation }) => {
         updatedPlayerData[index] = {
           ...player,
           totalScore: totalScore + scoreToAdd,
-          scoreToAdd: '',
+          scoreToAdd: 0,
         };
         updated = true;
       }
@@ -54,7 +54,7 @@ const NewScoreScreen = ({ navigation }) => {
         <View style={styles.playerContainer} key={index}>
           <TextInput
             style={styles.nameInput}
-            placeholder={`Player ${index + 1} Name`}
+            placeholder={`Player ${index + 1}`}
             placeholderTextColor="#888"
             value={player.name}
             onChangeText={(text) => handleInputChange(index, 'name', text)}
@@ -73,6 +73,7 @@ const NewScoreScreen = ({ navigation }) => {
             placeholderTextColor="#888"
             keyboardType="number-pad"
             value={player.scoreToAdd}
+            defaultValue='0'
             onChangeText={(text) => handleInputChange(index, 'scoreToAdd', text)}
           />
         </View>
