@@ -1,4 +1,5 @@
 import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -6,9 +7,22 @@ import RegisterScreen from '../screens/RegisterScreen';
 const Stack = createStackNavigator();
 
 const AuthNavigator = () => (
-  <Stack.Navigator>
-    <Stack.Screen name="Login" component={LoginScreen} />
-    <Stack.Screen name="Register" component={RegisterScreen} />
+  <Stack.Navigator
+    screenOptions={{
+      headerStyle: { backgroundColor: '#000' },
+      headerTintColor: '#fff',
+      headerTitleStyle: { fontSize: 20, fontWeight: 'bold' },
+    }}>
+    <Stack.Screen
+      name="Login"
+      component={LoginScreen}
+      options={{ title: 'Login to your account' }}
+    />
+    <Stack.Screen
+      name="Register"
+      component={RegisterScreen}
+      options={{ title: 'Login to your account' }}
+    />
   </Stack.Navigator>
 );
 
