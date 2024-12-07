@@ -5,17 +5,20 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadToken = async () => {
-      try { // check for saved token
+      try {
         const token = await AsyncStorage.getItem('authToken');
+        console.log('Loaded token:', token);
         if (token) {
           setIsAuthenticated(true);
-          // apiLogin
         }
       } catch (error) {
         console.log('Failed to load token', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -24,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (token) => {
     setIsAuthenticated(true);
-    try { // store auth token
+    try {
       await AsyncStorage.setItem('authToken', token);
     } catch (error) {
       console.log('Failed to save token', error);
@@ -41,7 +44,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
