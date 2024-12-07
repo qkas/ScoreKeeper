@@ -21,7 +21,7 @@ const register = async (email, password) => {
   }
 };
 
-const login = async (email, password) => {
+const emailLogin = async (email, password) => {
   const endpoint = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
   try {
     const response = await axios.post(endpoint, {
@@ -40,4 +40,20 @@ const login = async (email, password) => {
   }
 };
 
-export { register, login };
+const tokenLogin = async (idToken) => {
+  const endpoint = `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`;
+  try {
+    const response = await axios.post(endpoint, { idToken });
+    return response.data.users[0];
+  } catch (error) {
+    console.log(error.response.data);
+    if (error.response) {
+      alert(error.response.data.error.message);
+    } else {
+      alert('An unknown error occurred');
+    }
+  }
+
+}
+
+export { register, emailLogin, tokenLogin };

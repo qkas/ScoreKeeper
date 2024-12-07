@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { tokenLogin } from '../util/auth';
 
 const AuthContext = createContext();
 
@@ -11,12 +12,13 @@ export const AuthProvider = ({ children }) => {
     const loadToken = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
-        console.log('Loaded token:', token);
         if (token) {
+          const user = await tokenLogin(token);
           setIsAuthenticated(true);
         }
       } catch (error) {
-        console.log('Failed to load token', error);
+        console.log('Token validation failed:', error.message);
+        setIsAuthenticated(false);
       } finally {
         setLoading(false);
       }
