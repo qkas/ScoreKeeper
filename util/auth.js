@@ -12,7 +12,12 @@ const register = async (email, password) => {
     });
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.log(error.response.data);
+    if (error.response) {
+      alert(error.response.data.error.message);
+    } else {
+      alert('An unknown error occurred');
+    }
   }
 };
 
@@ -26,7 +31,12 @@ const login = async (email, password) => {
     });
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.log(error.response.data);
+    if (error.response) {
+      alert(error.response.data.error.message);
+    } else {
+      alert('An unknown error occurred');
+    }
   }
 };
 
