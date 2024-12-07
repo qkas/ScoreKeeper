@@ -9,11 +9,13 @@ const RegisterScreen = ({ navigation }) => {
   const handleRegister = async () => {
     try {
       const result = await register(email, password);
-      Alert.alert('Success', 'Registration successful!', [
-        { text: 'OK', onPress: () => navigation.navigate('Login') },
-      ]);
+      if (result) {
+        Alert.alert('Success', 'Registration successful!', [
+          { text: 'OK', onPress: () => navigation.navigate('Login') },
+        ]);
+      }
     } catch (error) {
-      Alert.alert('Error', error.message);
+      console.log(error)
     }
   };
 

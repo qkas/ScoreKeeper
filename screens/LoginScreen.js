@@ -12,15 +12,13 @@ const LoginScreen = ({ navigation }) => {
     try {
       const result = await apiLogin(email, password);
       if (result) {
-        login(); // set AuthContext isAuthenticated to true
+        login(result.idToken); // authenticate user
         Alert.alert('Success', 'Login successful!', [
           { text: 'OK', onPress: () => navigation.navigate('Home') },
         ]);
-      } else {
-        Alert.alert('Error', 'Invalid credentials!');
       }
     } catch (error) {
-      Alert.alert('Error', error.message || 'Something went wrong.');
+      console.log(error)
     }
   };
 
