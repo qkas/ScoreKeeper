@@ -7,6 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [userEmail, setUserEmail] = useState(null);
 
   useEffect(() => {
     const loadToken = async () => {
@@ -15,10 +16,12 @@ export const AuthProvider = ({ children }) => {
         if (token) {
           const user = await tokenLogin(token);
           setIsAuthenticated(true);
+          setUserEmail(user.email);
         }
       } catch (error) {
         console.log('Token validation failed:', error.message);
         setIsAuthenticated(false);
+        setUserEmail(null);
       } finally {
         setLoading(false);
       }
@@ -28,11 +31,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (token) => {
-    setIsAuthenticated(true);
     try {
+      const user = await tokenLogin(token);
+      setIsAuthenticated(true);
+      setUserEmail(user.email);
       await AsyncStorage.setItem('authToken', token);
     } catch (error) {
-      console.log('Failed to save token', error);
+      console.log('Failed to log in', error);
     }
   };
 
@@ -40,13 +45,16 @@ export const AuthProvider = ({ children }) => {
     try {
       await AsyncStorage.removeItem('authToken');
       setIsAuthenticated(false);
+      setUserEmail(null);
     } catch (error) {
       console.log('Failed to remove token', error);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, loading, userEmail, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

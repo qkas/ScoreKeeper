@@ -26,7 +26,7 @@ const HomeNavigator = () => {
           name="Home"
           component={HomeScreen}
           options={{
-            title: 'Scoreboard overview',
+            title: 'Scoreboards',
             headerRight: () => (
               <TouchableOpacity style={styles.logoutButton} onPress={logout}>
                 <Text style={styles.logoutText}>Logout</Text>
@@ -37,7 +37,7 @@ const HomeNavigator = () => {
         <Stack.Screen
           name="NewScore"
           component={NewScoreScreen}
-          options={{ title: "Create a new scoreboard" }}
+          options={{ title: "New scoreboard" }}
         />
       </Stack.Navigator>
     </>
