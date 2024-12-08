@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, FlatList } from 'react-native';
 
 const NewScoreScreen = ({ navigation }) => {
-  const [playerData, setPlayerData] = useState([{ name: '', totalScore: [], scoreToAdd: 0 }]);
+  const [playerData, setPlayerData] = useState([{ name: '', totalScore: [], scoreToAdd: "" }]);
 
   const handleInputChange = (index, field, value) => {
     const updatedPlayerData = [...playerData];
@@ -11,7 +11,7 @@ const NewScoreScreen = ({ navigation }) => {
   };
 
   const addPlayer = () => {
-    setPlayerData((prev) => [...prev, { name: '', totalScore: [], scoreToAdd: 0 }]);
+    setPlayerData((prev) => [...prev, { name: '', totalScore: [], scoreToAdd: "" }]);
   };
 
   const removePlayer = () => {
@@ -26,13 +26,12 @@ const NewScoreScreen = ({ navigation }) => {
 
     updatedPlayerData.forEach((player, index) => {
       if (player.scoreToAdd && !isNaN(player.scoreToAdd)) {
-        const totalScore = player.totalScore;
         const scoreToAdd = parseInt(player.scoreToAdd, 10);
 
         updatedPlayerData[index] = {
           ...player,
-          totalScore: [...totalScore, scoreToAdd],
-          scoreToAdd: 0,
+          totalScore: [...player.totalScore, scoreToAdd],
+          scoreToAdd: "",
         };
         updated = true;
       }
@@ -46,34 +45,46 @@ const NewScoreScreen = ({ navigation }) => {
     setPlayerData(updatedPlayerData);
   };
 
+  const renderPlayer = ({ item, index }) => (
+    <View style={styles.playerContainer}>
+      <View style={styles.row}>
+        <TextInput
+          style={styles.nameInput}
+          placeholder={`Player ${index + 1}`}
+          placeholderTextColor="#888"
+          value={item.name}
+          onChangeText={(text) => handleInputChange(index, 'name', text)}
+        />
+        <TextInput
+          style={styles.scoreInput}
+          placeholder="0"
+          placeholderTextColor="#888"
+          keyboardType="number-pad"
+          value={item.scoreToAdd}
+          onChangeText={(text) => handleInputChange(index, 'scoreToAdd', text)}
+        />
+      </View>
+      <Text style={styles.roundScoresLabel}>Round Scores:</Text>
+      <View style={styles.scoresContainer}>
+        {item.totalScore.map((score, roundIndex) => (
+          <Text key={roundIndex} style={styles.score}>
+            {score}
+          </Text>
+        ))}
+      </View>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Add Score</Text>
 
-      {playerData.map((player, index) => (
-        <View style={styles.playerContainer} key={index}>
-          <TextInput
-            style={styles.nameInput}
-            placeholder={`Player ${index + 1}`}
-            placeholderTextColor="#888"
-            value={player.name}
-            onChangeText={(text) => handleInputChange(index, 'name', text)}
-          />
-          <TextInput
-            style={styles.scoreInput}
-            keyboardType="number-pad"
-            value={player.totalScore.reduce((previous, current) => previous + current, 0).toString()}
-          />
-          <TextInput
-            style={styles.scoreInput}
-            placeholder="0"
-            placeholderTextColor="#888"
-            keyboardType="number-pad"
-            value={player.scoreToAdd}
-            onChangeText={(text) => handleInputChange(index, 'scoreToAdd', text)}
-          />
-        </View>
-      ))}
+      <FlatList
+        data={playerData}
+        renderItem={renderPlayer}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.listContent}
+      />
 
       <View style={styles.buttonContainer}>
         <Button title="+" onPress={addPlayer} color="#4caf50" />
@@ -95,7 +106,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: 'center',
   },
   nameInput: {
@@ -104,7 +115,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 15,
-    width: 80,
+    width: 120,
   },
   scoreInput: {
     backgroundColor: '#222',
@@ -114,10 +125,30 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     width: 120,
   },
-  playerContainer: {
+  roundScoresLabel: {
+    color: '#fff',
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  scoresContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexWrap: 'wrap',
+    marginBottom: 5,
+  },
+  score: {
+    backgroundColor: '#333',
+    color: '#fff',
+    borderRadius: 5,
+    padding: 5,
+    margin: 5,
+    textAlign: 'center',
+    minWidth: 30,
+  },
+  playerContainer: {
+    flexDirection: 'column',
+    backgroundColor: '#222',
+    borderRadius: 10,
+    padding: 15,
     marginBottom: 20,
   },
   buttonContainer: {
@@ -126,6 +157,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 20,
     gap: 50,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  listContent: {
+    paddingBottom: 20,
   },
 });
 
