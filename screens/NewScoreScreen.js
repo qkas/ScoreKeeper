@@ -1,100 +1,146 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, FlatList } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { postData } from '../util/helper';
 
-const NewScoreScreen = ({ navigation }) => {
-  const [playerData, setPlayerData] = useState([{ name: '', totalScore: [], scoreToAdd: "" }]);
-
-  const handleInputChange = (index, field, value) => {
-    const updatedPlayerData = [...playerData];
-    updatedPlayerData[index][field] = value;
-    setPlayerData(updatedPlayerData);
-  };
+const NewScoreScreen = () => {
+  const [gameName, setGameName] = useState('');
+  const [players, setPlayers] = useState([
+    { id: 1, name: '', totalScore: 0, roundScores: [] },
+    { id: 2, name: '', totalScore: 0, roundScores: [] }
+  ]);
+  const [rounds, setRounds] = useState(0);
 
   const addPlayer = () => {
-    setPlayerData((prev) => [...prev, { name: '', totalScore: [], scoreToAdd: "" }]);
+    const newPlayer = {
+      id: players.length + 1,
+      name: '',
+      totalScore: 0,
+      roundScores: Array(rounds).fill(0),
+    };
+    setPlayers([...players, newPlayer]);
   };
 
-  const removePlayer = () => {
-    if (playerData.length > 1) {
-      setPlayerData((prev) => prev.slice(0, -1));
-    }
+  const removePlayer = (id) => {
+    setPlayers(players.filter((player) => player.id !== id));
   };
 
-  const handleAddScore = () => {
-    const updatedPlayerData = [...playerData];
-    let updated = false;
-
-    updatedPlayerData.forEach((player, index) => {
-      if (player.scoreToAdd && !isNaN(player.scoreToAdd)) {
-        const scoreToAdd = parseInt(player.scoreToAdd, 10);
-
-        updatedPlayerData[index] = {
-          ...player,
-          totalScore: [...player.totalScore, scoreToAdd],
-          scoreToAdd: "",
-        };
-        updated = true;
-      }
-    });
-
-    if (!updated) {
-      Alert.alert('Error', 'Please enter a score to add for at least one player.');
-      return;
-    }
-
-    setPlayerData(updatedPlayerData);
+  const updatePlayerName = (id, name) => {
+    setPlayers((prevPlayers) =>
+      prevPlayers.map((player) =>
+        player.id === id ? { ...player, name } : player
+      )
+    );
   };
 
-  const renderPlayer = ({ item, index }) => (
-    <View style={styles.playerContainer}>
-      <View style={styles.row}>
-        <TextInput
-          style={styles.nameInput}
-          placeholder={`Player ${index + 1}`}
-          placeholderTextColor="#888"
-          value={item.name}
-          onChangeText={(text) => handleInputChange(index, 'name', text)}
-        />
-        <TextInput
-          style={styles.scoreInput}
-          placeholder="0"
-          placeholderTextColor="#888"
-          keyboardType="number-pad"
-          value={item.scoreToAdd}
-          onChangeText={(text) => handleInputChange(index, 'scoreToAdd', text)}
-        />
-      </View>
-      <Text style={styles.roundScoresLabel}>Round Scores:</Text>
-      <View style={styles.scoresContainer}>
-        {item.totalScore.map((score, roundIndex) => (
-          <Text key={roundIndex} style={styles.score}>
-            {score}
-          </Text>
-        ))}
-      </View>
-    </View>
-  );
+  const updateScoreToAdd = (id, value) => {
+    setPlayers((prevPlayers) =>
+      prevPlayers.map((player) =>
+        player.id === id ? { ...player, scoreToAdd: value } : player
+      )
+    );
+  };
+
+  const nextRound = () => {
+    setPlayers((prevPlayers) =>
+      prevPlayers.map((player) => ({
+        ...player,
+        roundScores: [...player.roundScores, parseInt(player.scoreToAdd || 0)],
+        totalScore: player.totalScore + parseInt(player.scoreToAdd || 0),
+        scoreToAdd: null,
+      }))
+    );
+    setRounds(rounds + 1);
+  };
+
+  const saveScoreboard = () => {
+    const data = {
+      name: gameName,
+      players: players.map(({ id, name, totalScore, roundScores }) => ({
+        id,
+        name: name || `Player ${id}`,
+        totalScore,
+        roundScores,
+      })),
+      rounds,
+    };
+    postData(data);
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Add Score</Text>
-
-      <FlatList
-        data={playerData}
-        renderItem={renderPlayer}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={styles.listContent}
-      />
-
-      <View style={styles.buttonContainer}>
-        <Button title="+" onPress={addPlayer} color="#4caf50" />
-        <Button title="-" onPress={removePlayer} color="#f44336" />
+      <View style={styles.headerRow}>
+        <TextInput
+          style={styles.gameNameInput}
+          placeholder="Enter Game Name"
+          placeholderTextColor="#aaa"
+          value={gameName}
+          onChangeText={setGameName}
+        />
+        <TouchableOpacity onPress={saveScoreboard} style={styles.saveButton}>
+          <Text style={styles.buttonText}>Save Scoreboard</Text>
+        </TouchableOpacity>
       </View>
-
-      <Button title="Update Score" onPress={handleAddScore} color="#4caf50" />
+  
+      {/* Current Round Section */}
+      <View style={styles.currentRoundContainer}>
+        <Text style={styles.currentRoundText}>Current Round: {rounds + 1}</Text>
+      </View>
+  
+      <FlatList
+        data={[...players, { id: 'add-player', isAddButton: true }]}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={styles.playerFlatList}
+        renderItem={({ item }) =>
+          item.isAddButton ? (
+            <TouchableOpacity onPress={addPlayer} style={styles.addPlayerButton}>
+              <Text style={styles.addPlayerText}>Add Player</Text>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.playerEntry}>
+              <TextInput
+                style={styles.playerNameInput}
+                placeholder={`Player ${item.id}`}
+                placeholderTextColor="#aaa"
+                value={item.name}
+                onChangeText={(name) => updatePlayerName(item.id, name)}
+              />
+              <Text style={styles.totalScore}>Total Score: {item.totalScore}</Text>
+              <FlatList
+                data={item.roundScores}
+                keyExtractor={(_, index) => index.toString()}
+                contentContainerStyle={styles.scoresFlatList}
+                horizontal
+                renderItem={({ item }) => (
+                  <Text style={styles.roundScore}>{item}</Text>
+                )}
+              />
+              <View style={styles.scoreInputRow}>
+                <Text style={styles.scoreLabel}>Score to add:</Text>
+                <TextInput
+                  style={styles.scoreInput}
+                  keyboardType="numeric"
+                  placeholder="0"
+                  placeholderTextColor="#aaa"
+                  value={item.scoreToAdd}
+                  onChangeText={(value) => updateScoreToAdd(item.id, value)}
+                />
+              </View>
+              <TouchableOpacity onPress={() => removePlayer(item.id)}>
+                <Text style={styles.removePlayerButton}>Remove player</Text>
+              </TouchableOpacity>
+            </View>
+          )
+        }
+      />
+  
+      <TouchableOpacity onPress={nextRound} style={styles.nextRoundButton}>
+        <Text style={styles.buttonText}>Add Scores</Text>
+      </TouchableOpacity>
     </View>
   );
 };
+
+export default NewScoreScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -102,70 +148,125 @@ const styles = StyleSheet.create({
     backgroundColor: '#111',
     padding: 20,
   },
-  title: {
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  gameNameInput: {
+    flex: 1,
     fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 10,
-    textAlign: 'center',
+    borderBottomWidth: 3,
+    borderBottomColor: 'grey',
+    marginBottom: 5,
+    paddingBottom: 5,
+    marginRight: 10,
   },
-  nameInput: {
-    backgroundColor: '#222',
+  saveButton: {
+    backgroundColor: '#6200ea',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  currentRoundContainer: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'grey',
+    paddingBottom: 5,
+  },
+  currentRoundText: {
     color: '#fff',
-    borderRadius: 5,
-    padding: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  playerFlatList: {
+    marginVertical: 20,
+    paddingBottom: 20,
+    paddingRight: 10,
+  },
+  playerEntry: {
+    backgroundColor: '#222',
+    padding: 15,
+    borderRadius: 10,
     marginBottom: 15,
-    width: 120,
+  },
+  playerNameInput: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    borderBottomWidth: 2,
+    borderBottomColor: 'grey',
+    paddingBottom: 5,
+    marginBottom: 0,
+    marginBottom: 10,
+  },
+  totalScore: {
+    color: '#aaa',
+    marginVertical: 5,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  scoresFlatList: {
+    marginBottom: 10,
+  },
+  roundScore: {
+    color: '#aaa',
+    marginHorizontal: 4,
+  },
+  scoreInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  scoreLabel: {
+    color: '#fff',
+    fontSize: 16,
+    marginRight: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   scoreInput: {
-    backgroundColor: '#222',
+    flex: 1,
     color: '#fff',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 15,
-    width: 120,
+    fontSize: 18,
+    fontWeight: 'bold',
+    borderBottomWidth: 2,
+    borderBottomColor: 'grey',
+    paddingBottom: 5,
+    marginBottom: 3,
   },
-  roundScoresLabel: {
-    color: '#fff',
-    fontSize: 14,
-    marginBottom: 5,
+  removePlayerButton: {
+    color: '#eb3636',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
   },
-  scoresContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 5,
-  },
-  score: {
-    backgroundColor: '#333',
-    color: '#fff',
-    borderRadius: 5,
-    padding: 5,
-    margin: 5,
-    textAlign: 'center',
-    minWidth: 30,
-  },
-  playerContainer: {
-    flexDirection: 'column',
-    backgroundColor: '#222',
+  addPlayerButton: {
+    backgroundColor: '#6200ea',
+    paddingVertical: 8,
     borderRadius: 10,
-    padding: 15,
+    alignItems: 'center',
+    marginTop: 10,
     marginBottom: 20,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-    gap: 50,
+  addPlayerText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-  row: {
-    flexDirection: 'row',
+  nextRoundButton: {
+    backgroundColor: '#6200ea',
+    paddingVertical: 14,
+    borderRadius: 10,
     alignItems: 'center',
-    marginBottom: 15,
+    width: '100%',
   },
-  listContent: {
-    paddingBottom: 20,
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
-export default NewScoreScreen;
