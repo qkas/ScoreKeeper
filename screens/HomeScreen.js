@@ -1,22 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import Scoreboards from '../components/Scoreboards';
 
-const HomeScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      {/* NEW SCOREBOARD BUTTON */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('NewScore')}
-      >
-        <Text style={styles.buttonText}>New scoreboard</Text>
-      </TouchableOpacity>
-      {/* SCOREBOARD ENTRIES */}
-      <Text style={styles.header}>Scoreboards</Text>
-      {/* TODO */}
-    </View>
-  );
-};
+const HomeScreen = ({ navigation }) => (
+  <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => navigation.navigate('NewScore')}
+    >
+      <Text style={styles.buttonText}>New scoreboard</Text>
+    </TouchableOpacity>
+    <Text style={styles.header}>Scoreboards</Text>
+    <Scoreboards />
+  </View>
+);
 
 export default HomeScreen;
 
@@ -25,7 +22,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#111',
     padding: 20,
-    alignItems: 'center',
   },
   button: {
     margin: '10%',
@@ -50,6 +46,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderBottomColor: 'grey',
     borderBottomWidth: 3,
+    marginBottom: 10,
     width: '100%',
-  },
+  }
 });
