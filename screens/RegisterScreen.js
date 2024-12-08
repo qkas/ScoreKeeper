@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   header: {
-    margin: 80,
+    margin: '4%',
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',

@@ -28,8 +28,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    marginTop: 80,
-    marginBottom: 50,
+    margin: '10%',
     backgroundColor: '#6200ea',
     paddingVertical: 14,
     paddingHorizontal: 30,

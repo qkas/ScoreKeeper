@@ -30,7 +30,7 @@ export default AppNavigator;
 
 const styles = StyleSheet.create({
   loadingContainer: {
-    margin: 80,
+    margin: '4%',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
