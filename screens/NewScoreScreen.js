@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 
 const NewScoreScreen = ({ navigation }) => {
-  const [playerData, setPlayerData] = useState([{ name: '', totalScore: 0, scoreToAdd: 0 }]);
+  const [playerData, setPlayerData] = useState([{ name: '', totalScore: [], scoreToAdd: 0 }]);
 
   const handleInputChange = (index, field, value) => {
     const updatedPlayerData = [...playerData];
@@ -11,7 +11,7 @@ const NewScoreScreen = ({ navigation }) => {
   };
 
   const addPlayer = () => {
-    setPlayerData((prev) => [...prev, { name: '', totalScore: 0, scoreToAdd: 0 }]);
+    setPlayerData((prev) => [...prev, { name: '', totalScore: [], scoreToAdd: 0 }]);
   };
 
   const removePlayer = () => {
@@ -31,7 +31,7 @@ const NewScoreScreen = ({ navigation }) => {
 
         updatedPlayerData[index] = {
           ...player,
-          totalScore: totalScore + scoreToAdd,
+          totalScore: [...totalScore, scoreToAdd],
           scoreToAdd: 0,
         };
         updated = true;
@@ -61,19 +61,15 @@ const NewScoreScreen = ({ navigation }) => {
           />
           <TextInput
             style={styles.scoreInput}
-            placeholder="Total Score"
-            placeholderTextColor="#888"
             keyboardType="number-pad"
-            value={player.totalScore.toString()}
-            onChangeText={(text) => handleInputChange(index, 'totalScore', parseInt(text, 10) || 0)}
+            value={player.totalScore.reduce((previous, current) => previous + current, 0).toString()}
           />
           <TextInput
             style={styles.scoreInput}
-            placeholder="Score to Add"
+            placeholder="0"
             placeholderTextColor="#888"
             keyboardType="number-pad"
             value={player.scoreToAdd}
-            defaultValue='0'
             onChangeText={(text) => handleInputChange(index, 'scoreToAdd', text)}
           />
         </View>
