@@ -1,15 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
 import NewScoreScreen from '../screens/NewScoreScreen';
-import { useAuth } from '../context/AuthContext';
+import ProfileTab from '../components/ProfileTab';
 
 const Stack = createStackNavigator();
 
 const HomeNavigator = () => {
-  const { logout } = useAuth();
-
   return (
     <>
       <StatusBar
@@ -26,18 +24,14 @@ const HomeNavigator = () => {
           name="Home"
           component={HomeScreen}
           options={{
-            title: 'Scoreboard overview',
-            headerRight: () => (
-              <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-                <Text style={styles.logoutText}>Logout</Text>
-              </TouchableOpacity>
-            ),
+            title: 'Scoreboards',
+            headerRight: () => <ProfileTab />
           }}
         />
         <Stack.Screen
           name="NewScore"
           component={NewScoreScreen}
-          options={{ title: "Create a new scoreboard" }}
+          options={{ title: "New scoreboard" }}
         />
       </Stack.Navigator>
     </>
@@ -45,14 +39,3 @@ const HomeNavigator = () => {
 };
 
 export default HomeNavigator;
-
-const styles = StyleSheet.create({
-  logoutButton: {
-    marginRight: 20,
-  },
-  logoutText: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-});

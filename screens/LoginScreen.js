@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
-import { login as apiLogin } from '../util/auth'; // renaming to avoid conflict with context login
+import { emailLogin } from '../util/auth'; 
 import { useAuth } from '../context/AuthContext';
 
 const LoginScreen = ({ navigation }) => {
@@ -10,17 +10,15 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const result = await apiLogin(email, password);
+      const result = await emailLogin(email, password);
       if (result) {
-        login(); // set AuthContext isAuthenticated to true
+        login(result.idToken); // authenticate user
         Alert.alert('Success', 'Login successful!', [
           { text: 'OK', onPress: () => navigation.navigate('Home') },
         ]);
-      } else {
-        Alert.alert('Error', 'Invalid credentials!');
       }
     } catch (error) {
-      Alert.alert('Error', error.message || 'Something went wrong.');
+      console.log(error)
     }
   };
 
@@ -68,7 +66,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   header: {
-    margin: 80,
+    margin: '4%',
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
