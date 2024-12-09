@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Alert } from 'react-native';
 import { postData } from '../util/helper';
 
-const NewScoreScreen = () => {
+const NewScoreScreen = ({ navigation }) => {
   const [gameName, setGameName] = useState('');
   const [players, setPlayers] = useState([
     { id: 1, name: '', totalScore: 0, roundScores: [] },
@@ -52,7 +52,7 @@ const NewScoreScreen = () => {
     setRounds(rounds + 1);
   };
 
-  const saveScoreboard = () => {
+  const saveScoreboard = async () => {
     const data = {
       name: gameName,
       players: players.map(({ id, name, totalScore, roundScores }) => ({
@@ -63,7 +63,16 @@ const NewScoreScreen = () => {
       })),
       rounds,
     };
-    postData(data);
+    try {
+      const result = await postData(data);
+      if (result) {
+        Alert.alert('Success', 'Scoreboard saved!', [
+          { text: 'OK', onPress: () => navigation.navigate('Home') },
+        ]);
+      }
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   return (
@@ -77,7 +86,7 @@ const NewScoreScreen = () => {
           onChangeText={setGameName}
         />
         <TouchableOpacity onPress={saveScoreboard} style={styles.saveButton}>
-          <Text style={styles.buttonText}>Save Scoreboard</Text>
+          <Text style={styles.buttonText}>Save</Text>
         </TouchableOpacity>
       </View>
   
@@ -244,7 +253,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   addPlayerButton: {
-    backgroundColor: '#6200ea',
+    backgroundColor: '#333',
     paddingVertical: 8,
     borderRadius: 10,
     alignItems: 'center',
