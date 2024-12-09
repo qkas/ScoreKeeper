@@ -1,51 +1,22 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { ScoresContext } from '../context/ScoresContext';
 
 const Scoreboards = () => {
-  const data = [
-    {
-      id: '1',
-      game: {
-        name: 'Scrabble',
-        players: [
-          { id: 1, name: 'Alice', totalScore: 230, roundScores: [18, 7, 23, 19, 0, 20, 15 , 14] },
-          { id: 2, name: 'Bob', totalScore: 180, roundScores: [15, 17, 19, 9, 2, 22, 14, 13] },
-          { id: 3, name: 'Charlie', totalScore: 210, roundScores: [8, 20, 16, 19, 0, 10, 28, 12] },
-        ],
-        rounds: 8,
-      },
-    },
-    {
-      id: '2',
-      game: {
-        name: 'Darts',
-        players: [
-          { id: 1, name: 'David', totalScore: 450, roundScores: [50, 60, 55] },
-          { id: 2, name: 'Emma', totalScore: 350, roundScores: [45, 50, 45] },
-          { id: 3, name: 'Frank', totalScore: 400, roundScores: [55, 50, 45] },
-        ],
-        rounds: 3,
-      },
-    },
-    {
-      id: '3',
-      game: {
-        name: 'Yatzy',
-        players: [
-          { id: 1, name: 'Grace', totalScore: 180, roundScores: [30, 50, 40] },
-          { id: 2, name: 'Helen', totalScore: 200, roundScores: [40, 50, 45] },
-          { id: 3, name: 'Irene', totalScore: 190, roundScores: [35, 45, 40] },
-        ],
-        rounds: 3,
-      },
-    },  
-  ];
+  const { scores } = useContext(ScoresContext);
+
+  // Convert the object into an array for rendering
+  const scoresArray = Object.entries(scores).map(([id, game]) => ({
+    id,
+    ...game,
+  }));
+
   const renderScoreboard = ({ item }) => (
     <View style={styles.scoreboard}>
-      <Text style={styles.gameTitle}>{item.game.name}</Text>
-      <Text style={styles.rounds}>Rounds: {item.game.rounds}</Text>
-      {item.game.players.map(player => (
-        <View key={player.id} style={styles.player}>
+      <Text style={styles.gameTitle}>{item.name}</Text>
+      <Text style={styles.rounds}>Rounds: {item.rounds}</Text>
+      {item.players.map((player, index) => (
+        <View key={index} style={styles.player}>
           <Text style={styles.playerName}>
             {player.name}: {player.totalScore} pts
           </Text>
@@ -59,7 +30,7 @@ const Scoreboards = () => {
 
   return (
     <FlatList
-      data={data}
+      data={scoresArray}
       renderItem={renderScoreboard}
       keyExtractor={item => item.id}
       contentContainerStyle={styles.container}
@@ -97,10 +68,10 @@ const styles = StyleSheet.create({
   playerName: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   roundScores: {
     color: '#aaa',
     fontSize: 14,
   },
-})
+});

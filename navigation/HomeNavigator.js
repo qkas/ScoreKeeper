@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { StatusBar, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import React from 'react';
+import { StatusBar } from 'react-native';
+import { ScoresProvider } from '../context/ScoresContext';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
 import NewScoreScreen from '../screens/NewScoreScreen';
@@ -9,7 +10,7 @@ const Stack = createStackNavigator();
 
 const HomeNavigator = () => {
   return (
-    <>
+    <ScoresProvider>
       <StatusBar
         translucent={true}
         barStyle="light-content"
@@ -34,7 +35,7 @@ const HomeNavigator = () => {
           options={{ title: "New scoreboard" }}
         />
       </Stack.Navigator>
-    </>
+    </ScoresProvider>
   );
 };
 
