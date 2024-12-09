@@ -12,15 +12,15 @@ export default LoadingScreen;
 
 const styles = StyleSheet.create({
   loadingContainer: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#111',
+    flex: 1,
+    justifyContent: 'center',
   },
   loadingText: {
-    marginTop: 10,
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    marginTop: 10,
   },
 });

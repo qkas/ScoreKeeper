@@ -71,39 +71,28 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     paddingRight: 10,
   },
-  scoreboard: {
-    backgroundColor: '#222',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 15,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  gameTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-    flex: 1,
-  },
   deleteButton: {
     backgroundColor: '#eb3636',
+    borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    borderRadius: 5,
   },
   deleteButtonText: {
     color: '#fff',
     fontSize: 14,
     fontWeight: 'bold',
   },
-  rounds: {
-    color: '#aaa',
-    fontSize: 16,
-    marginVertical: 5,
+  gameTitle: {
+    color: '#fff',
+    flex: 1,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  header: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   player: {
     marginTop: 10,
@@ -116,5 +105,16 @@ const styles = StyleSheet.create({
   roundScores: {
     color: '#aaa',
     fontSize: 14,
+  },
+  rounds: {
+    color: '#aaa',
+    fontSize: 16,
+    marginVertical: 5,
+  },
+  scoreboard: {
+    backgroundColor: '#222',
+    borderRadius: 10,
+    marginBottom: 15,
+    padding: 20,
   },
 });

@@ -27,36 +27,36 @@ const styles = StyleSheet.create({
   iconContainer: {
     marginRight: 10,
   },
-  profileIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 3,
-    borderColor: '#fff'
-  },
-  tab: {
-    position: 'absolute',
-    top: 50,
-    right: 10,
-    backgroundColor: '#333',
-    padding: 20,
-    borderRadius: 8,
-    zIndex: 10,
-    width: '200'
-  },
-  text: {
-    color: '#fff',
-    fontSize: 16,
-    marginBottom: 10,
-  },
   logoutButton: {
-    marginEnd: 10,
     alignSelf: 'flex-end',
+    marginEnd: 10,
   },
   logoutText: {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  profileIcon: {
+    borderColor: '#fff',
+    borderRadius: 20,
+    borderWidth: 3,
+    height: 40,
+    width: 40
+  },
+  tab: {
+    backgroundColor: '#333',
+    borderRadius: 8,
+    padding: 20,
+    position: 'absolute',
+    right: 10,
+    top: 50,
+    width: '200',
+    zIndex: 10
+  },
+  text: {
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 10,
   },
 });
 

@@ -18,19 +18,14 @@ const HomeScreen = ({ navigation }) => (
 export default HomeScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#111',
-    padding: 20,
-  },
   button: {
-    margin: '10%',
+    alignItems: 'center',
     backgroundColor: '#6200ea',
-    paddingVertical: 14,
-    paddingHorizontal: 30,
     borderRadius: 10,
     justifyContent: 'center',
-    alignItems: 'center',
+    margin: '10%',
+    paddingHorizontal: 30,
+    paddingVertical: 14,
   },
   buttonText: {
     color: '#fff',
@@ -38,15 +33,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textTransform: 'uppercase',
   },
+  container: {
+    backgroundColor: '#111',
+    flex: 1,
+    padding: 20,
+  },
   header: {
+    borderBottomColor: 'grey',
+    borderBottomWidth: 3,
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 10,
     paddingVertical: 10,
     textAlign: 'center',
-    borderBottomColor: 'grey',
-    borderBottomWidth: 3,
-    marginBottom: 10,
     width: '100%',
   }
 });
