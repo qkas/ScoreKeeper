@@ -22,7 +22,7 @@ export const ScoresProvider = ({ children }) => {
   }, [scores]);
 
   return (
-    <ScoresContext.Provider value={{ scores }}>
+    <ScoresContext.Provider value={{ scores, setScores }}>
       {children}
     </ScoresContext.Provider>
   );
