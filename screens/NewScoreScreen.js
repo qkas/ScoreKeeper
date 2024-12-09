@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Alert } from 'react-native';
 import { postData } from '../util/helper';
+import { useAuth } from '../context/AuthContext';
 
 const NewScoreScreen = ({ navigation }) => {
+  const { idToken, localId } = useAuth();
   const [gameName, setGameName] = useState('');
   const [players, setPlayers] = useState([
     { id: 1, name: '', totalScore: 0, roundScores: [] },
@@ -64,7 +66,7 @@ const NewScoreScreen = ({ navigation }) => {
       rounds,
     };
     try {
-      const result = await postData(data);
+      const result = await postData(localId, data, idToken);
       if (result) {
         Alert.alert('Success', 'Scoreboard saved!', [
           { text: 'OK', onPress: () => navigation.navigate('Home') },

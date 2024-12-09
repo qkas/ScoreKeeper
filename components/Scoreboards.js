@@ -21,7 +21,7 @@ const Scoreboards = () => {
             {player.name}: {player.totalScore} pts
           </Text>
           <Text style={styles.roundScores}>
-            Scores: {player.roundScores.join(', ')}
+            Scores: {(player.roundScores || []).join(', ')}
           </Text>
         </View>
       ))}

@@ -8,6 +8,8 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userEmail, setUserEmail] = useState(null);
+  const [idToken, setIdToken] = useState(null);
+  const [localId, setLocalId] = useState(null);
 
   useEffect(() => {
     const loadToken = async () => {
@@ -17,11 +19,15 @@ export const AuthProvider = ({ children }) => {
           const user = await tokenLogin(token);
           setIsAuthenticated(true);
           setUserEmail(user.email);
+          setIdToken(token);
+          setLocalId(user.localId);
         }
       } catch (error) {
         console.log('Token validation failed:', error.message);
         setIsAuthenticated(false);
         setUserEmail(null);
+        setIdToken(null);
+        setLocalId(null);
       } finally {
         setLoading(false);
       }
@@ -35,9 +41,11 @@ export const AuthProvider = ({ children }) => {
       const user = await tokenLogin(token);
       setIsAuthenticated(true);
       setUserEmail(user.email);
+      setIdToken(token);
+      setLocalId(user.localId);
       await AsyncStorage.setItem('authToken', token);
     } catch (error) {
-      console.log('Failed to log in', error);
+      console.log('Failed to log in:', error.message);
     }
   };
 
@@ -46,14 +54,24 @@ export const AuthProvider = ({ children }) => {
       await AsyncStorage.removeItem('authToken');
       setIsAuthenticated(false);
       setUserEmail(null);
+      setIdToken(null);
+      setLocalId(null);
     } catch (error) {
-      console.log('Failed to remove token', error);
+      console.log('Failed to remove token:', error.message);
     }
   };
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, loading, userEmail, login, logout }}
+      value={{
+        isAuthenticated,
+        loading,
+        userEmail,
+        idToken, // Expose idToken
+        localId, // Expose localId
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>
