@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#333',
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: '60%', // fixes keyboard not having enough space to open at bottom of list
     marginTop: 10,
     paddingVertical: 8,
   },
