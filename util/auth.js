@@ -47,11 +47,6 @@ const tokenLogin = async (idToken) => {
     return response.data.users[0];
   } catch (error) {
     console.log(error.response.data);
-    if (error.response) {
-      alert(error.response.data.error.message);
-    } else {
-      alert('An unknown error occurred');
-    }
   }
 
 }
